@@ -7,9 +7,15 @@ from matplotlib.pyplot import *
 
 size = int(input("Enter the size of image:\n"))
 image = np.zeros((size, size, 3), dtype="uint8")
-lines = [((random.uniform(0, size), random.uniform(0, size)), (random.uniform(0, size), random.uniform(0, size))) for i
-         in range(100)]
+lines = [((random.uniform(0, size - 1), random.uniform(0, size - 1)),
+          (random.uniform(0, size - 1), random.uniform(0, size - 1)))
+         for i in range(100)]
+image.fill(255)
+cv.imshow("image", image)
 
+
+# TODO: choosing whether to show or save or both
+# TODO: comment everything or migrate to the anaconda
 
 def sign(number):
     result = 1 if number > 0 else -1 if number < 0 else 0
@@ -63,40 +69,26 @@ def line_brezenham(x1, y1, x2, y2):
     return image
 
 
-times_dda = []
-for line in lines:
-    start = time.time()
+def check(func, window_title):
+    times = []
+    for line in lines:
+        start = time.time()
 
-    start_point, end_point = line
-    x_1, y_1 = start_point
-    x_2, y_2 = end_point
-    cv.imshow("white", line_dda(x_1, y_1, x_2, y_2))
-    # cv.waitKey(0)
-    line_dda(x_1, y_1, x_2, y_2)
+        start_point, end_point = line
+        x_1, y_1 = start_point
+        x_2, y_2 = end_point
+        cv.imshow("white", func(x_1, y_1, x_2, y_2))
+        # cv.waitKey(0)
 
-    end = time.time()
-    times_dda.append(end - start)
+        end = time.time()
+        times.append(end - start)
 
-plot(times_dda)
-title("DDA")
-show()
-print(sum(times_dda))
+    plot(times)
+    title(window_title)
+    show()
+    return sum(times)
 
-times_brezenham = []
-for line in lines:
-    start = time.time()
 
-    start_point, end_point = line
-    x_1, y_1 = start_point
-    x_2, y_2 = end_point
-    cv.imshow("white", line_dda(x_1, y_1, x_2, y_2))
-    # cv.waitKey(0)
-    line_brezenham(x_1, y_1, x_2, y_2)
+print(check(line_brezenham, "Brezenham"))
+print(check(line_dda, "DDA"))
 
-    end = time.time()
-    times_brezenham.append(end - start)
-
-plot(times_brezenham)
-title("Brezenham")
-show()
-print(sum(times_brezenham))
