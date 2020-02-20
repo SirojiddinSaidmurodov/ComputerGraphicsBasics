@@ -5,20 +5,13 @@ import numpy as np
 import math
 import time
 from matplotlib.pyplot import *
-from ImageWriter import ImageWriter
 
 size = int(input("Enter the size of image:\n"))
-show_save = int(input("Enter the following number to set the settings:\n"
-                      "1 - f you want to check timings only\n"
-                      "2 - if you want to see the picks\n"
-                      "3 - if you want to save images\n"
-                      "4 - if you want to see and save images\n"))
 image = np.zeros((size, size, 3), dtype="uint8")
 lines = [((random.uniform(0, size - 1), random.uniform(0, size - 1)),
           (random.uniform(0, size - 1), random.uniform(0, size - 1)))
          for i in range(100)]
 image.fill(255)
-cv.imshow("image", image)
 
 
 # TODO: comment everything or migrate to the anaconda
@@ -29,7 +22,6 @@ def sign(number):
 
 
 def line_dda(x1, y1, x2, y2):
-    image.fill(255)
     if abs(x2 - x1) >= abs(y2 - y1):
         length = abs(x2 - x1)
     else:
@@ -46,7 +38,6 @@ def line_dda(x1, y1, x2, y2):
 
 
 def line_brezenham(x1, y1, x2, y2):
-    image.fill(255)
     x = x1
     y = y1
     dx = abs(x2 - x1)
@@ -75,7 +66,7 @@ def line_brezenham(x1, y1, x2, y2):
     return image
 
 
-def check(func, window_title, setting):
+def check(func, window_title):
     times = []
     i: int = 0
     for line in lines:
@@ -85,26 +76,16 @@ def check(func, window_title, setting):
         x_1, y_1 = start_point
         x_2, y_2 = end_point
         im = func(x_1, y_1, x_2, y_2)
-        if setting == 2:
-            cv.imshow(window_title, im)
-            cv.waitKey(0)
-        elif setting == 3:
-            thread = ImageWriter(im, str(i + 1), window_title)
-            thread.start()
-        elif setting == 4:
-            cv.imshow(window_title, im)
-            thread = ImageWriter(im, str(i + 1), window_title)
-            thread.start()
-            cv.waitKey(0)
         end = time.time()
         times.append(end - start)
         i += 1
-
+    cv.imshow(window_title, im)
+    cv.waitKey(0)
     plot(times)
     title(window_title)
     show()
-    return sum(times)
+    return sum(times) / 100
 
 
-print(check(line_dda, "DDA", show_save))
-print(check(line_brezenham, "Brezenham", show_save))
+print(check(line_dda, "DDA"))
+print(check(line_brezenham, "Brezenham"))
