@@ -69,23 +69,20 @@ def line_brezenham(x1, y1, x2, y2):
 def check(func, window_title):
     times = []
     i: int = 0
+    start = time.time()
     for line in lines:
-        start = time.time()
-
         start_point, end_point = line
         x_1, y_1 = start_point
         x_2, y_2 = end_point
         im = func(x_1, y_1, x_2, y_2)
-        end = time.time()
-        times.append(end - start)
         i += 1
+    end = time.time()
+    times.append(end - start)
     cv.imshow(window_title, im)
     cv.waitKey(0)
-    plot(times)
-    title(window_title)
     show()
     return sum(times) / 100
 
 
-print(check(line_dda, "DDA"))
-print(check(line_brezenham, "Brezenham"))
+print("DDA ", check(line_dda, "DDA"))
+print("Brezenham ", check(line_brezenham, "Brezenham"))
