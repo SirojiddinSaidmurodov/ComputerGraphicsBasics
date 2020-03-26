@@ -9,7 +9,6 @@ image = np.zeros((size, size, 3), dtype="uint8")
 lines = [((random.uniform(0, size - 1), random.uniform(0, size - 1)),
           (random.uniform(0, size - 1), random.uniform(0, size - 1)))
          for i in range(100)]
-image.fill(255)
 
 
 def sign(number):
@@ -63,6 +62,8 @@ def line_brezenham(x1, y1, x2, y2):
 
 
 def check(func, window_title):
+    global im
+    image.fill(255)
     times = []
     i: int = 0
     start = time.time()
