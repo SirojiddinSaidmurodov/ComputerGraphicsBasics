@@ -4,9 +4,8 @@ In computer graphics, a digital differential analyzer (DDA) is hardware or softw
 
 Bresenham's line algorithm is a line drawing algorithm that determines the points of an n-dimensional raster that should be selected in order to form a close approximation to a straight line between two points.
 [Read more](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm "Wikipedia article")
-![Example of generated image](example.jpg "Example of generated image using DDA.")
-
-Example of generated image using DDA.
+<img src="example.jpg" width="400" hight="400">
+*Example of generated image using DDA.*
 
 The task is to compute which of algorithms is most effective through generating 100 random segments using both algorithms. 
 
