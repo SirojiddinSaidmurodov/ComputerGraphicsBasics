@@ -1,9 +1,7 @@
-import random
-from threading import Thread
-import cv2 as cv
-import numpy as np
 import math
-import time
+import random
+
+import cv2 as cv
 from matplotlib.pyplot import *
 
 size = int(input("Enter the size of image:\n"))
@@ -13,8 +11,6 @@ lines = [((random.uniform(0, size - 1), random.uniform(0, size - 1)),
          for i in range(100)]
 image.fill(255)
 
-
-# TODO: comment everything or migrate to the anaconda
 
 def sign(number):
     result = 1 if number > 0 else -1 if number < 0 else 0
@@ -31,7 +27,7 @@ def line_dda(x1, y1, x2, y2):
     x = x1 + 0.5 * sign(dx)
     y = y1 + 0.5 * sign(dy)
     for i in range(int(length)):
-        image[math.ceil(x), math.ceil(y)] = [0, 0, 0]  # drawing a black point
+        image[math.ceil(x), math.ceil(y)] = [0, 0, 0]
         x += dx
         y += dy
     return image
@@ -51,7 +47,7 @@ def line_brezenham(x1, y1, x2, y2):
         change = False
     epsilon = 2 * dy - dx
     for i in range(int(dx)):
-        image[math.ceil(x), math.ceil(y)] = [0, 0, 0]  # drawing a black point
+        image[math.ceil(x), math.ceil(y)] = [0, 0, 0]
         while epsilon >= 0:
             if change == 1:
                 x += s1
