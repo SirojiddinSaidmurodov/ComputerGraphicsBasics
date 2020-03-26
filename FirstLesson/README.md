@@ -9,4 +9,4 @@ Example of generated image using DDA.
 
 The task is to compute which of algorithms is most effective through generating 100 random segments using both algorithms. 
 
-For drawing segments we need their 2 edge points. We can get random points using Python's built-in function random.uniform(). For comparing the time used for drawing of each algorithm we need to make them draw *same* lines.
+For drawing segments we need their 2 edge points. We can get random points using Python's built-in function random.uniform(). For comparing the time used for drawing of each algorithm we need to make them draw *same* lines
