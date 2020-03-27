@@ -5,8 +5,9 @@ In computer graphics, a digital differential analyzer (DDA) is hardware or softw
 Bresenham's line algorithm is a line drawing algorithm that determines the points of an n-dimensional raster that should be selected in order to form a close approximation to a straight line between two points.
 [Read more](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm "Wikipedia article")
 <img src="example.jpg" width="400" hight="400">
+
 *Example of generated image using DDA.*
 
 The task is to compute which of algorithms is most effective through generating 100 random segments using both algorithms. 
 
-For drawing segments we need their 2 edge points. We can get random points using Python's built-in function random.uniform(). For comparing the time used for drawing of each algorithm we need to make them draw *same* lines
+For drawing segments we need their 2 edge points. We can get random points using Python's built-in function random.uniform(). For comparing the average time spent for drawing lines using both algorithms we need to make them draw *same* lines, so we can keep random points in the list of tuples.
