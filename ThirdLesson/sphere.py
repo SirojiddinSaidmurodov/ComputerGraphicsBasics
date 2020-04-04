@@ -27,24 +27,17 @@ class Sphere:
                        self.radius * math.cos(math.radians(lat)) * math.cos(math.radians(long)),
                        self.radius * math.sin(math.radians(lat)))
 
-    def get_points(self, B: int, L: int) -> list:
+    def get_points(self, longitude_count: int, latitude_count: int) -> list:
         lines = []
-        poles = [self.__get_coord(90, 0), self.__get_coord(-90, 0)]
-        level = [poles[0]] * L
-        latitudes = [90 - (180 / B) * k for k in range(1, B + 1)]
-        longs = [(360 / L) * k for k in range(L)]
-        temp = []
-        for i in range(len(latitudes)):
-            for j in range(len(longs)):
-                temp.append(self.__get_coord(i, longs[j]))  # next level
-                lines.append((level[j], temp[j]))  # lines from current level to the next one
-            if i != B - 1:  # if the next level is not pole
-                for j in range(L):
-                    if j == L - 1:
-                        next_point = 0
-                    else:
-                        next_point = j + 1
-                    lines.append((temp[j], temp[next_point]))  # lines between points of one level
-            level = temp  # change next level
-            temp.clear()
+        u, v = np.mgrid[0:2 * np.pi:complex(longitude_count), 0:np.pi:complex(latitude_count)]
+        x = np.cos(u) * np.sin(v) * self.radius
+        y = np.sin(u) * np.sin(v) * self.radius
+        z = np.cos(v) * self.radius
+        x += 250
+        y += 250
+        z += 250
+        for i in range(longitude_count - 1):
+            for j in range(latitude_count - 1):
+                lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i + 1, j], y[i + 1, j], z[i + 1, j])))
+                lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i, j + 1], y[i, j + 1], z[i, j + 1])))
         return lines

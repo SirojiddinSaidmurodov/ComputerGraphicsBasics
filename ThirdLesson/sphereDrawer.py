@@ -10,7 +10,7 @@ image = np.zeros((500, 500, 3), dtype="uint8")
 for line in lines:
     a, b = line
     print(str(a) + " : " + str(b))
-    cv2.line(image, (int(a.x), int(a.y)), (int(b.x), int(b.y)), (255, 255, 255))
+    cv2.line(image, (int(a.x), int(a.z)), (int(b.x), int(b.z)), (255, 255, 255))
 
 cv2.imshow("im", image)
 cv2.waitKey(0)
