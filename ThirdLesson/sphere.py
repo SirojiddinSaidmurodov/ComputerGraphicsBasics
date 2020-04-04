@@ -7,7 +7,32 @@ class Point3D:
         self.x = x
         self.y = y
         self.z = z
-        self.axes = np.array([x, y, z])
+        self.axes = np.array([x, y, z, 1])
+
+    def set_point(self, arr):
+        self.axes = arr
+        self.x = arr[0]
+        self.y = arr[1]
+        self.z = arr[2]
+
+    def turn(self, rx, ry, rz):
+        rxrad = math.radians(rx)
+        ryrad = math.radians(ry)
+        rzrad = math.radians(rz)
+        Rx = np.array([[1, 0, 0, 0],
+                       [0, math.cos(rxrad), math.sin(rxrad), 0],
+                       [0, -math.sin(rxrad), math.cos(rxrad), 0],
+                       [0, 0, 0, 1]])
+        Ry = np.array([[math.cos(ryrad), 0, -math.sin(ryrad), 0],
+                       [0, 1, 0, 0],
+                       [math.sin(ryrad), 0, math.cos(ryrad), 0],
+                       [0, 0, 0, 1]])
+        Rz = np.array([[math.cos(rzrad), math.sin(rzrad), 0, 0],
+                       [-math.sin(rzrad), math.cos(rzrad), 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]])
+        temp = self.axes
+        self.set_point(temp @ Rx @ Ry @ Rz)
 
     def move(self, x, y):
         self.x += x
@@ -18,9 +43,10 @@ class Point3D:
 
 
 class Sphere:
-    def __init__(self, center: Point3D, radius):
+    def __init__(self, center: Point3D, radius, angle: Point3D = Point3D(0, 0, 0)):
         self.center = center
         self.radius = radius
+        self.angle = angle
 
     def __get_coord(self, lat: float, long: float) -> Point3D:
         return Point3D(self.radius * math.cos(math.radians(lat)) * math.sin(math.radians(long)),
@@ -33,11 +59,16 @@ class Sphere:
         x = np.cos(u) * np.sin(v) * self.radius
         y = np.sin(u) * np.sin(v) * self.radius
         z = np.cos(v) * self.radius
-        x += 250
-        y += 250
-        z += 250
         for i in range(longitude_count - 1):
             for j in range(latitude_count - 1):
                 lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i + 1, j], y[i + 1, j], z[i + 1, j])))
                 lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i, j + 1], y[i, j + 1], z[i, j + 1])))
+
+        for line in lines:
+            b, e = line
+            b.turn(self.angle.x, self.angle.y, self.angle.z)
+            e.turn(self.angle.x, self.angle.y, self.angle.z)
+
+        # TODO: delete invisible lines
+        # TODO: set a point of view
         return lines
