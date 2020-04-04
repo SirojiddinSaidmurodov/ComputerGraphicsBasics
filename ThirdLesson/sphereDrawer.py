@@ -3,9 +3,8 @@ import cv2
 import numpy as np
 from matplotlib.pyplot import *
 
-sphere = sp.Sphere(sp.Point3D(250, 250, 0), 200, sp.Point3D(10, 10, 10))
-lines = sphere.get_points(30, 30)
-print(len(lines))
+sphere = sp.Sphere(sp.Point3D(250, 250, 0), 200, sp.Point3D(60, 30, 10))
+lines = sphere.get_points(25, 25)
 image = np.zeros((500, 500, 3), dtype="uint8")
 image.fill(255)
 for line in lines:

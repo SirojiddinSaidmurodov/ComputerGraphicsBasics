@@ -16,19 +16,19 @@ class Point3D:
         self.z = arr[2]
 
     def turn(self, rx, ry, rz):
-        rxrad = math.radians(rx)
-        ryrad = math.radians(ry)
-        rzrad = math.radians(rz)
+        rxRad = math.radians(rx)
+        ryRad = math.radians(ry)
+        rzRad = math.radians(rz)
         Rx = np.array([[1, 0, 0, 0],
-                       [0, math.cos(rxrad), math.sin(rxrad), 0],
-                       [0, -math.sin(rxrad), math.cos(rxrad), 0],
+                       [0, math.cos(rxRad), math.sin(rxRad), 0],
+                       [0, -math.sin(rxRad), math.cos(rxRad), 0],
                        [0, 0, 0, 1]])
-        Ry = np.array([[math.cos(ryrad), 0, -math.sin(ryrad), 0],
+        Ry = np.array([[math.cos(ryRad), 0, -math.sin(ryRad), 0],
                        [0, 1, 0, 0],
-                       [math.sin(ryrad), 0, math.cos(ryrad), 0],
+                       [math.sin(ryRad), 0, math.cos(ryRad), 0],
                        [0, 0, 0, 1]])
-        Rz = np.array([[math.cos(rzrad), math.sin(rzrad), 0, 0],
-                       [-math.sin(rzrad), math.cos(rzrad), 0, 0],
+        Rz = np.array([[math.cos(rzRad), math.sin(rzRad), 0, 0],
+                       [-math.sin(rzRad), math.cos(rzRad), 0, 0],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]])
         temp = self.axes
@@ -63,7 +63,7 @@ class Sphere:
             for j in range(latitude_count - 1):
                 lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i + 1, j], y[i + 1, j], z[i + 1, j])))
                 lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i, j + 1], y[i, j + 1], z[i, j + 1])))
-
+        #  turning points
         for line in lines:
             b, e = line
             b.turn(self.angle.x, self.angle.y, self.angle.z)
