@@ -2,8 +2,8 @@ import ThirdLesson.sphere as sp
 import cv2
 import numpy as np
 
-sphere = sp.Sphere(sp.Point3D(250, 250, 0), 200, sp.Point3D(35, 35, 15))
-lines = sphere.get_points(25, 25)
+sphere = sp.Sphere(sp.Point3D(np.array([250, 250, 0, 1])), 200, sp.Point3D(np.array([35, 35, 15, 1])))
+lines = sphere.get_points(18, 18)
 image = np.zeros((500, 500, 3), dtype="uint8")
 image.fill(255)
 for line in lines:
