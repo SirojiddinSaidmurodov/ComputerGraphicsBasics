@@ -15,25 +15,6 @@ class Point3D:
         self.y = arr[1]
         self.z = arr[2]
 
-    def turn(self, rx, ry, rz):
-        rxRad = math.radians(rx)
-        ryRad = math.radians(ry)
-        rzRad = math.radians(rz)
-        Rx = np.array([[1, 0, 0, 0],
-                       [0, math.cos(rxRad), math.sin(rxRad), 0],
-                       [0, -math.sin(rxRad), math.cos(rxRad), 0],
-                       [0, 0, 0, 1]])
-        Ry = np.array([[math.cos(ryRad), 0, -math.sin(ryRad), 0],
-                       [0, 1, 0, 0],
-                       [math.sin(ryRad), 0, math.cos(ryRad), 0],
-                       [0, 0, 0, 1]])
-        Rz = np.array([[math.cos(rzRad), math.sin(rzRad), 0, 0],
-                       [-math.sin(rzRad), math.cos(rzRad), 0, 0],
-                       [0, 0, 1, 0],
-                       [0, 0, 0, 1]])
-        temp = self.axes
-        self.set_point(temp @ Rx @ Ry @ Rz)
-
     def move(self, x, y):
         self.x += x
         self.y += y
@@ -46,12 +27,33 @@ class Sphere:
     def __init__(self, center: Point3D, radius, angle: Point3D = Point3D(0, 0, 0)):
         self.center = center
         self.radius = radius
-        self.angle = angle
+        self.angle = Point3D(math.radians(angle.x), math.radians(angle.y), math.radians(angle.z))
 
     def __get_coord(self, lat: float, long: float) -> Point3D:
         return Point3D(self.radius * math.cos(math.radians(lat)) * math.sin(math.radians(long)),
                        self.radius * math.cos(math.radians(lat)) * math.cos(math.radians(long)),
                        self.radius * math.sin(math.radians(lat)))
+
+    @staticmethod
+    def rotate(points_matrix, rx, ry, rz):
+        Rx = np.array([[1, 0, 0, 0],
+                       [0, math.cos(rx), math.sin(rx), 0],
+                       [0, -math.sin(rx), math.cos(rx), 0],
+                       [0, 0, 0, 1]])
+        Ry = np.array([[math.cos(ry), 0, -math.sin(ry), 0],
+                       [0, 1, 0, 0],
+                       [math.sin(ry), 0, math.cos(ry), 0],
+                       [0, 0, 0, 1]])
+        Rz = np.array([[math.cos(rz), math.sin(rz), 0, 0],
+                       [-math.sin(rz), math.cos(rz), 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]])
+        temp = Rx @ Ry @ Rz
+        _, a, b = points_matrix.shape
+        points_matrix = points_matrix.T
+        for i in range(a):
+            points_matrix[:, i, :] = points_matrix[:, i, :] @ temp
+        return points_matrix
 
     def get_points(self, longitude_count: int, latitude_count: int) -> list:
         lines = []
@@ -59,15 +61,18 @@ class Sphere:
         x = np.cos(u) * np.sin(v) * self.radius
         y = np.sin(u) * np.sin(v) * self.radius
         z = np.cos(v) * self.radius
+
+        points = np.stack((x, y, z, np.ones(x.shape)))
+        #  rotating points
+        Sphere.rotate(points, self.angle.x, self.angle.y, self.angle.z)
+
         for i in range(longitude_count - 1):
             for j in range(latitude_count - 1):
-                lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i + 1, j], y[i + 1, j], z[i + 1, j])))
-                lines.append((Point3D(x[i, j], y[i, j], z[i, j]), Point3D(x[i, j + 1], y[i, j + 1], z[i, j + 1])))
-        #  turning points
-        for line in lines:
-            b, e = line
-            b.turn(self.angle.x, self.angle.y, self.angle.z)
-            e.turn(self.angle.x, self.angle.y, self.angle.z)
+                #  All lines are visible by default
+                lines.append((Point3D(points[0, i, j], points[1, i, j], points[2, i, j]),
+                              Point3D(points[0, i + 1, j], points[1, i + 1, j], points[2, i + 1, j]), True))
+                lines.append((Point3D(points[0, i, j], points[1, i, j], points[2, i, j]),
+                              Point3D(points[0, i, j + 1], points[1, i, j + 1], points[2, i, j + 1]), True))
 
         # TODO: delete invisible lines
         # TODO: set a point of view

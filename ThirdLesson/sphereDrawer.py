@@ -7,7 +7,7 @@ lines = sphere.get_points(25, 25)
 image = np.zeros((500, 500, 3), dtype="uint8")
 image.fill(255)
 for line in lines:
-    a, b = line
+    a, b, _ = line
     cv2.line(image, (int(a.x) + 250, int(a.z) + 250), (int(b.x) + 250, int(b.z) + 250), (0, 0, 0))
 
 cv2.imshow("im", image)
