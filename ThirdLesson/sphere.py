@@ -9,12 +9,31 @@ class Point3D:
         self.z = coordinates[2]
         self.axes = coordinates
 
-    def move(self, x, y):
-        self.x += x
-        self.y += y
+    def __eq__(self, other):
+        if (self.axes == other.axes).sum() == 4:
+            return True
+        return False
 
     def __str__(self):
         return str(self.x) + "-" + str(self.y) + "-" + str(self.z)
+
+
+class Line:
+    def __init__(self, p1, p2):
+        self.p1 = p1
+        self.p2 = p2
+        self.visibility = 0
+
+    def to_tuple(self):
+        return self.p1, self.p2, self.visibility
+
+    def set_v(self):
+        self.visibility += 1
+
+    def __eq__(self, other):
+        if self.p1 == other.p2 and self.p2 == other.p2 or self.p1 == other.p2 and self.p2 == self.p1:
+            return True
+        return False
 
 
 class Sphere:
@@ -61,13 +80,39 @@ class Sphere:
         for i in range(longitude_count - 1):
             for j in range(latitude_count - 1):
                 #  All lines are visible by default
-                lines.append((Point3D(points[:, i, j]),
-                              Point3D(points[:, i + 1, j]),
-                              0))
-                lines.append((Point3D(points[:, i, j]),
-                              Point3D(points[:, i, j + 1]),
-                              0))
+                lines.append(Line(Point3D(points[:, i, j]),
+                                  Point3D(points[:, i + 1, j])))
+                lines.append(Line(Point3D(points[:, i, j]),
+                                  Point3D(points[:, i, j + 1])))
 
-        #  TODO: delete invisible lines
-        #  TODO: set a point of view
+        #  delete invisible lines using Roberts algorithm
+        for i in range(longitude_count - 1):
+            for j in range(1, latitude_count - 1):
+                if i == 0:
+                    temp = [points[:, i, j - 1],
+                            points[:, i + 1, j],
+                            points[:, i, j + 1]]
+                else:
+                    temp = [points[:, i - 1, j],
+                            points[:, i, j - 1],
+                            points[:, i + 1, j],
+                            points[:, i, j + 1],
+                            points[:, i - 1, j]]
+                for surface in range(len(temp) - 1):
+                    v1 = temp[surface] - points[:, i, j]
+                    v2 = temp[surface + 1] - points[:, i, j]
+                    A = v1[1] * v2[2] - v2[1] * v1[2]
+                    B = v1[2] * v2[0] - v2[2] * v1[0]
+                    C = v1[0] * v2[1] - v2[0] * v1[1]
+                    D = -(A * v1[0] + B * v1[1] + C * v1[2])
+                    #  if (A·W.X + B·W.Y + C·W.Z + D)<0 : but W is (0,0,0)
+                    if D < 0:
+                        m = -1
+                    else:
+                        m = 1
+                    #  correcting surface normal vector
+                    A, B, C, D = A * m, B * m, C * m, D * m
+
+
+
         return lines
