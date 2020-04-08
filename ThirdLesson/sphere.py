@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import numpy as np
 import math
 
@@ -9,12 +7,6 @@ class Sphere:
         self.center = center
         self.radius = radius
         self.angle = np.radians(angle)
-
-    def __get_coord(self, lat: float, long: float):
-        return (np.array([self.radius * math.cos(math.radians(lat)) * math.sin(math.radians(long)),
-                          self.radius * math.cos(math.radians(lat)) * math.cos(math.radians(long)),
-                          self.radius * math.sin(math.radians(lat)),
-                          1]))
 
     def rotate(self, points_matrix, rx, ry, rz):
         Rx = np.array([[1, 0, 0, 0],
@@ -46,7 +38,7 @@ class Sphere:
             return False
         return True
 
-    def get_points(self, longitude_count: int, latitude_count: int):
+    def get_lines(self, longitude_count: int, latitude_count: int):
         u, v = np.mgrid[0:2 * np.pi:complex(longitude_count), 0:np.pi:complex(latitude_count)]
         x = np.cos(u) * np.sin(v) * self.radius
         y = np.sin(u) * np.sin(v) * self.radius
