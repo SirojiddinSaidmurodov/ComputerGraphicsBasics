@@ -1,8 +1,9 @@
-import ThirdLesson.sphere as sp
 import cv2
 import numpy as np
 
-sphere = sp.Sphere(np.array([250, 250, 250, 1]), 200, np.array([60, 30, 10, 1]))
+import ThirdLesson.sphere as sp
+
+sphere = sp.Sphere(np.array([250, 250, 250, 1]), 200, np.array([30, 30, 0, 1]))
 lines = sphere.get_lines(30, 30)
 image = np.zeros((500, 500, 3), dtype="uint8")
 image.fill(255)
