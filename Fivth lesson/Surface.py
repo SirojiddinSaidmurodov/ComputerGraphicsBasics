@@ -69,7 +69,7 @@ def rectangle_drawer(rectangle, components):
 
 
 root = Tk()
-root.title("Геометрические преобразования прямоугольника")
+root.title("Геометрические преобразования прямоугольника. Автор: Саидмуродов Сирожиддин")
 root.geometry("1000x500+50+50")
 
 button_x_plus = Button(root, text="+", height=1, width=1, command=lambda c=0, i=True: change(c, i))
