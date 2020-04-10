@@ -2,11 +2,11 @@ import math
 from tkinter import *
 
 import cv2 as cv
-#  initializing rectangle vertex and moving, rotating coefficients
 import numpy as np
 from PIL import Image
 from PIL import ImageTk
 
+#  initializing rectangle vertex and moving, rotating coefficients
 rectangle_vertex = [
     [50, 50, 0, 1],
     [200, 50, 0, 1],
@@ -39,10 +39,10 @@ def change(component, increase):
 
 
 def rectangle_drawer(rectangle, components):
-    image = np.zeros((500, 600, 3), dtype='uint8')
-    rx = components[3]
-    ry = components[4]
-    rz = components[5]
+    image = np.zeros((500, 800, 3), dtype='uint8')
+    rx = math.radians(components[3])
+    ry = math.radians(components[4])
+    rz = math.radians(components[5])
     Rx = np.array([[1, 0, 0, 0],
                    [0, math.cos(rx), math.sin(rx), 0],
                    [0, -math.sin(rx), math.cos(rx), 0],
@@ -64,7 +64,6 @@ def rectangle_drawer(rectangle, components):
         [components[0], components[1], components[2], 0]
     ])
     pts = np.array([moved_rec[:, :2]], 'int32')
-    print(pts)
     cv.fillPoly(image, pts, color=[104, 255, 255])
     return image
 
