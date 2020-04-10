@@ -1,22 +1,72 @@
+import math
 from tkinter import *
 
+import cv2 as cv
 #  initializing rectangle vertex and moving, rotating coefficients
-surface = [
-    [0, 0, 0, 1],
-    [300, 0, 0, 1],
-    [300, 500, 0, 1],
-    [0, 500, 0, 1]
+import numpy as np
+from PIL import Image
+from PIL import ImageTk
+
+rectangle_vertex = [
+    [50, 50, 0, 1],
+    [200, 50, 0, 1],
+    [200, 300, 0, 1],
+    [50, 300, 0, 1]
 ]
 #  x, y, z, xr, yr, zr
-components = [0, 0, 0, 0, 0, 0]
+components_values = [0, 0, 0, 0, 0, 0]
+panel = None
 
 
 def change(component, increase):
-    global components
+    global components_values, panel, rectangle_vertex
     delta = -5
     if increase:
         delta = 5
-    components[component] += delta
+    components_values[component] += delta
+
+    im = rectangle_drawer(np.array(rectangle_vertex), components_values)
+    im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
+    im = Image.fromarray(im)
+    im = ImageTk.PhotoImage(im)
+    if panel is None:
+        panel = Label(image=im)
+        panel.image = im
+        panel.pack(side="left")
+    else:
+        panel.configure(image=im)
+        panel.image = im
+
+
+def rectangle_drawer(rectangle, components):
+    image = np.zeros((500, 600, 3), dtype='uint8')
+    rx = components[3]
+    ry = components[4]
+    rz = components[5]
+    Rx = np.array([[1, 0, 0, 0],
+                   [0, math.cos(rx), math.sin(rx), 0],
+                   [0, -math.sin(rx), math.cos(rx), 0],
+                   [0, 0, 0, 1]])
+    Ry = np.array([[math.cos(ry), 0, -math.sin(ry), 0],
+                   [0, 1, 0, 0],
+                   [math.sin(ry), 0, math.cos(ry), 0],
+                   [0, 0, 0, 1]])
+    Rz = np.array([[math.cos(rz), math.sin(rz), 0, 0],
+                   [-math.sin(rz), math.cos(rz), 0, 0],
+                   [0, 0, 1, 0],
+                   [0, 0, 0, 1]])
+    rot_matrix = Rx @ Ry @ Rz
+    rot_rec = rectangle @ rot_matrix
+    moved_rec = rot_rec + np.array([
+        [components[0], components[1], components[2], 0],
+        [components[0], components[1], components[2], 0],
+        [components[0], components[1], components[2], 0],
+        [components[0], components[1], components[2], 0]
+    ])
+    pts = np.array([moved_rec[:, :2]], 'int32')
+    print(pts)
+    cv.fillPoly(image, pts, color=[104, 255, 255])
+    return image
 
 
 root = Tk()
