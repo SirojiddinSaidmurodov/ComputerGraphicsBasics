@@ -22,6 +22,7 @@ panel = None
 
 def change(component, increase):
     global components_values, panel, polygon_vertex, polygon_center
+    delta = 0
     if component == 2:
         delta = -5
         if increase:
@@ -46,24 +47,40 @@ def change(component, increase):
 
 
 def draw(points, center, image, color):
-    cv.fillPoly(image, np.int32([points]), color=[255, 255, 255])
-    # cv.polylines(image, np.int32([points]), isClosed=True, color=[255, 255, 255], thickness=1)
-    # image[center[0], center[1], :] = 255
-    # stack = [(center[0], center[1])]
-    # while len(stack) > 0:
-    #     pixel_x, pixel_y = stack.pop()
-    #     pixel_x, pixel_y = int(pixel_x), int(pixel_y)
-    #     if np.any(image[pixel_x, pixel_y] == 0):
-    #         image[pixel_x, pixel_y] = color
-    #
-    #     if np.any(image[pixel_x + 1, pixel_y] == 0):
-    #         stack.append((pixel_x + 1, pixel_y))
-    #     if np.any(image[pixel_x, pixel_y + 1] == 0):
-    #         stack.append((pixel_x, pixel_y + 1))
-    #     if np.any(image[pixel_x - 1, pixel_y] == 0):
-    #         stack.append((pixel_x - 1, pixel_y))
-    #     if np.any(image[pixel_x, pixel_y - 1] == 0):
-    #         stack.append((pixel_x, pixel_y - 1))
+    # cv.fillPoly(image, np.int32([points]), color=[255, 255, 255])
+    cv.polylines(image, np.int32([points]), isClosed=True, color=[255, 255, 255], thickness=1)
+    stack = [(center[0], center[1])]
+    while len(stack) > 0:
+        pixel_x, pixel_y = stack.pop()
+        pixel_x, pixel_y = int(pixel_x), int(pixel_y)
+        if pixel_x >= 0:
+            pixel_x_prev = pixel_x - 1
+        else:
+            pixel_x_prev = pixel_x
+        if pixel_x < 499:
+            pixel_x_next = pixel_x + 1
+        else:
+            pixel_x_next = pixel_x
+        if pixel_y >= 0:
+            pixel_y_prev = pixel_y - 1
+        else:
+            pixel_y_prev = pixel_y
+        if pixel_y < 799:
+            pixel_y_next = pixel_y + 1
+        else:
+            pixel_y_next = pixel_y
+
+        if np.any(image[pixel_x, pixel_y] == 0):
+            image[pixel_x, pixel_y] = color
+
+        if np.any(image[pixel_x_next, pixel_y] == 0):
+            stack.append((pixel_x_next, pixel_y))
+        if np.any(image[pixel_x, pixel_y_next] == 0):
+            stack.append((pixel_x, pixel_y_next))
+        if np.any(image[pixel_x_prev, pixel_y] == 0):
+            stack.append((pixel_x_prev, pixel_y))
+        if np.any(image[pixel_x, pixel_y_prev] == 0):
+            stack.append((pixel_x, pixel_y_prev))
     return image
 
 
