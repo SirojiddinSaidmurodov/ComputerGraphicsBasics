@@ -1,9 +1,3 @@
-/Additional/FedStats_Lat_long.png
-/PuassonAndVinerFiltering/test.jpg
-/SixthLesson/image (3).png
-/SixthLesson/image (1).png
-/SixthLesson/2.jpg
-/SixthLesson/image (2).png
-/SixthLesson/image (0).png
-/SixthLesson/image (4).png
-/SixthLesson/1.jpg
+*.jpg
+*.png
+*.jpeg
