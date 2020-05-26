@@ -25,13 +25,13 @@ def change(component, increase):
     for i in range(len(lines)):
         a, b = lines[i]
         cv.line(image, (int(a[0]) + 250, int(a[1]) + 250), (int(b[0]) + 250, int(b[1]) + 250), (0, 0, 0))
+
     im = image
     im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
     im = Image.fromarray(im)
     im = ImageTk.PhotoImage(im)
     if panel is None:
         panel = Label(image=im)
-        panel.image = im
         panel.pack(side="left")
     else:
         panel.configure(image=im)
